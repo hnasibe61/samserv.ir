@@ -1,0 +1,138 @@
+/* استایل اختصاصی Samtronic */
+body {
+    background: linear-gradient(135deg, #f0f4f8 0%, #e0e7ef 100%);
+    min-height: 100vh;
+}
+
+header, footer {
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+
+h1, h2, h3, h4, h5, h6, input, textarea, button {
+    font-family: 'Vazirmatn', 'Tahoma', sans-serif !important;
+}
+
+.container {
+    max-width: 1200px;
+}
+
+input, textarea {
+    background: #f9fafb;
+    border: 1px solid #cbd5e1;
+    transition: border 0.2s;
+    border-radius: 0.5rem;
+    font-size: 1rem;
+}
+input:focus, textarea:focus {
+    border: 1.5px solid #2563eb;
+    outline: none;
+    background: #fff;
+}
+
+button, .btn {
+    font-family: inherit;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    border-radius: 0.75rem;
+    transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+    box-shadow: 0 2px 8px 0 rgba(37,99,235,0.08);
+}
+
+/* کارت خدمات */
+.bg-white.shadow-md, .bg-white.shadow-lg {
+    border-radius: 1rem;
+    box-shadow: 0 4px 24px 0 rgba(37,99,235,0.08);
+}
+
+/* گالری */
+.gallery-card {
+    border-radius: 1.5rem;
+    overflow: hidden;
+    box-shadow: 0 6px 32px 0 rgba(37,99,235,0.10);
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+.gallery-card:hover {
+    transform: scale(1.04);
+    box-shadow: 0 12px 40px 0 rgba(37,99,235,0.18);
+}
+
+/* رنگ‌های سفارشی */
+.text-blue-800 {
+    color: #1e40af !important;
+}
+.bg-blue-800 {
+    background: #1e40af !important;
+}
+.bg-blue-600 {
+    background: #2563eb !important;
+}
+.text-blue-600 {
+    color: #2563eb !important;
+}
+
+/* ریسپانسیو اختصاصی */
+@media (max-width: 640px) {
+    .container { padding: 0 0.5rem; }
+    h1 { font-size: 1.5rem; }
+    h2 { font-size: 1.2rem; }
+    .gallery-card { min-height: 320px; }
+}
+.video-wrapper {
+  position: relative;
+  width: 100%;
+  max-width: 420px;    /* یا هر سایز دلخواه تو */
+  aspect-ratio: 16/9;  /* نسبت تصویر حرفه‌ای و استاندارد */
+  margin: 0 auto 2rem auto;
+  box-shadow: 0 2px 20px rgba(30,64,175,0.08);
+  border-radius: 16px;
+  background: #fff;
+  overflow: hidden;
+}
+.video-wrapper video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;   /* اگر قاب دقیق می‌خوای */
+  border-radius: 16px;
+  display: block;
+}
+.video-wrapper {
+    position: relative;
+    width: 100%;
+    max-width: 420px;
+    aspect-ratio: 16/9;  /* شرط پشتیبانی مرورگر – اگر نشد از نسخه بعدی استفاده کن */
+    margin: 0 auto 1.5rem auto;
+    border-radius: 20px;
+    box-shadow: 0 2px 20px rgba(30,64,175,0.07);
+    background: #fff;
+    overflow: hidden;
+}
+
+.video-wrapper video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 16px;
+    display: block;
+    background: #222;
+}
+/* نسخه قدیمی برای مرورگرهای خیلی قدیمی که aspect-ratio رو قبول نمی‌کنند */
+.video-16by9 {
+    position: relative;
+    width: 100%;
+    max-width: 420px;
+    margin: 0 auto 1.5rem auto;
+}
+.video-16by9:before {
+    content: "";
+    display: block;
+    padding-top: 56.25%;
+}
+.video-16by9 video {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    object-fit: cover;
+    border-radius: 16px;
+    background: #222;
+}
+
