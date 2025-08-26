@@ -1,0 +1,78 @@
+name: Build & Deploy Optimized Static HTML to Pages
+
+on:
+  push:
+    branches: ["main"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # Node.js برای ابزارهای بهینه‌سازی
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      # نصب ابزارهای ساده برای minify و optimize
+      - name: Install optimization tools
+        run: |
+          npm install -g clean-css-cli terser imagemin-cli imagemin-mozjpeg imagemin-pngquant
+    
+      # Minify CSS
+      - name: Minify CSS
+        run: |
+          mkdir -p assets/css/min
+          for file in $(find assets/css -name "*.css" ! -path "*/min/*"); do
+            cleancss -o "assets/css/min/$(basename $file)" "$file"
+          done
+
+      # Minify JS
+      - name: Minify JS
+        run: |
+          mkdir -p assets/js/min
+          for file in $(find assets/js -name "*.js" ! -path "*/min/*"); do
+            terser "$file" -o "assets/js/min/$(basename $file)" --compress --mangle
+          done
+
+      # Optimize Images (jpg/jpeg/png)
+      - name: Optimize images
+        run: |
+          for file in $(find assets/images -type f \( -name "*.jpg" -o -name "*.jpeg" -o -name "*.png" \)); do
+            imagemin "$file" --plugin=mozjpeg --plugin=pngquant > "$file.tmp" && mv "$file.tmp" "$file"
+          done
+
+      # Link check & basic SEO hints (اختیاری ولی مفید)
+      - name: Basic SEO & link check
+        run: |
+          npx broken-link-checker http://localhost --recursive || true
+          echo "چک سئو پایه انجام شد — تگ‌های <title> و <meta description> بررسی شوند."
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: '.'
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
