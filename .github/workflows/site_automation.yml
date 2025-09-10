@@ -28,10 +28,10 @@ jobs:
 
       - name: Run content update script
         env:
-          GITHUB_TOKEN: ${{ secrets.REPO_TOKENVALUE }}
-          GITHUB_OWNER: ${{ secrets.OWNERVALUE }}
-          GITHUB_REPO: ${{ secrets.REPOVALUE }}
-          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEYVALUE }}
+          REPO_TOKENVALUE: ${{ secrets.REPO_TOKENVALUE }}
+          OWNERVALUE: ${{ secrets.OWNERVALUE }}
+          REPOVALUE: ${{ secrets.REPOVALUE }}
+          OPENAI_API_KEYVALUE: ${{ secrets.OPENAI_API_KEYVALUE }}
         run: python gpt_content_update.py
 
   site_check:
@@ -53,7 +53,7 @@ jobs:
 
       - name: Run site check script
         env:
-          GITHUB_TOKEN: ${{ secrets.REPO_TOKENVALUE }}
-          GITHUB_OWNER: ${{ secrets.OWNERVALUE }}
-          GITHUB_REPO: ${{ secrets.REPOVALUE }}
+          REPO_TOKENVALUE: ${{ secrets.REPO_TOKENVALUE }}
+          OWNERVALUE: ${{ secrets.OWNERVALUE }}
+          REPOVALUE: ${{ secrets.REPOVALUE }}
         run: python site_check.py
