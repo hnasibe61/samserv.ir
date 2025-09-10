@@ -1,0 +1,59 @@
+name: Site Automation
+
+on:
+  schedule:
+    # تولید محتوا دو بار در روز
+    - cron: "0 6,18 * * *"
+    # بررسی سایت یک بار در روز
+    - cron: "0 3 * * *"
+  workflow_dispatch:
+
+jobs:
+  content_generation:
+    runs-on: ubuntu-latest
+    if: github.event.schedule == '0 6,18 * * *' || github.event_name == 'workflow_dispatch'
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      - name: Install dependencies
+        run: |
+          pip install --upgrade pip
+          pip install requests openai python-dotenv
+
+      - name: Run content update script
+        env:
+          GITHUB_TOKEN: ${{ secrets.REPO_TOKENVALUE }}
+          GITHUB_OWNER: ${{ secrets.OWNERVALUE }}
+          GITHUB_REPO: ${{ secrets.REPOVALUE }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEYVALUE }}
+        run: python gpt_content_update.py
+
+  site_check:
+    runs-on: ubuntu-latest
+    if: github.event.schedule == '0 3 * * *' || github.event_name == 'workflow_dispatch'
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      - name: Install dependencies
+        run: |
+          pip install --upgrade pip
+          pip install requests python-dotenv
+
+      - name: Run site check script
+        env:
+          GITHUB_TOKEN: ${{ secrets.REPO_TOKENVALUE }}
+          GITHUB_OWNER: ${{ secrets.OWNERVALUE }}
+          GITHUB_REPO: ${{ secrets.REPOVALUE }}
+        run: python site_check.py
