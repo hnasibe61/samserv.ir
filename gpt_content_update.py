@@ -82,7 +82,7 @@ _, sha = get_file_content(path)
 update_file(path, blog_html, sha, "main", f"Add blog post {today}")
 
 def daily_site_check():
-path = index.html"
+path = "index.html"
 old_content, sha = get_file_content(path)
 new_content = gpt_optimize_content(old_content)
 update_file(path, new_content, sha, "main", "Daily site optimization")
