@@ -37,26 +37,28 @@ HEADERS = {
 client = OpenAI(api_key=OPENAI_API_KEY)
 
 # ==== توابع کار با GitHub ====
-def create_branch(branch_name):
-    main_branch = requests.get(BASE_URL, headers=HEADERS).json()["default_branch"]
-    sha = requests.get(f"{BASE_URL}/git/refs/heads/{main_branch}", headers=HEADERS).json()["object"]["sha"]
-    requests.post(f"{BASE_URL}/git/refs", headers=HEADERS, json={
-        "ref": f"refs/heads/{branch_name}",
-        "sha": sha
-    })
-
-def get_file_content(path, branch):
-    res = requests.get(f"{BASE_URL}/contents/{path}?ref={branch}", headers=HEADERS).json()
+def get_file_content(path, branch="main"):
+    """دریافت محتوای فایل و sha از main"""
+    url = f"{BASE_URL}/contents/{path}?ref={branch}"
+    res = requests.get(url, headers=HEADERS)
+    if res.status_code == 404:
+        return "", None  # فایل جدید است
+    res = res.json()
     return base64.b64decode(res["content"]).decode(), res["sha"]
 
-def update_file(path, content, sha, branch, message):
+def update_file(path, content, sha=None, branch="main", message="update file"):
+    """آپلود یا به‌روزرسانی فایل در main"""
     encoded = base64.b64encode(content.encode()).decode()
-    requests.put(f"{BASE_URL}/contents/{path}", headers=HEADERS, json={
+    data = {
         "message": message,
         "content": encoded,
-        "sha": sha,
         "branch": branch
-    })
+    }
+    if sha:
+        data["sha"] = sha
+    res = requests.put(f"{BASE_URL}/contents/{path}", headers=HEADERS, json=data)
+    res.raise_for_status()
+    print(f"✅ {path} updated on {branch}")
 
 # ==== توابع مرتبط با OpenAI ====
 def gpt_generate_blog():
@@ -80,21 +82,14 @@ def gpt_optimize_site(content):
 # ==== وظایف اصلی ====
 def add_blog_post():
     today = datetime.now().strftime("%Y-%m-%d")
-    branch = f"blog-{today}"
-    create_branch(branch)
-    blog_content = gpt_generate_blog()
-
     file_path = f"blog/{today}.html"
+    blog_content = gpt_generate_blog()
     html = f"<html><body>{blog_content}</body></html>"
-
-    update_file(file_path, html, None, branch, f"Add blog post {today}")
-    print(f"✅ Blog post added for {today}")
+    _, sha = get_file_content(file_path, "main")
+    update_file(file_path, html, sha, "main", f"Add blog post {today}")
 
 def daily_site_check():
-    branch = f"site-update-{datetime.now().strftime('%Y-%m-%d')}"
-    create_branch(branch)
-    file_path = "index.html"  # صفحه اصلی سایت
-    old_content, sha = get_file_content(file_path, branch)
-
+    file_path = "index.html"
+    old_content, sha = get_file_content(file_path, "main")
     new_content = gpt_optimize_site(old_content)
-    update_file(file_path, new_content, sha, branch, "Daily site optimization")
+    update_file(file_path, new_content, sha, "main", "Daily site optimization")
