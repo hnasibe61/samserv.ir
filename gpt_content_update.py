@@ -14,16 +14,16 @@ OPENAI_API_KEY = os.getenv("OPENAI_API_KEYVALUE")
 # ==== چک کردن اینکه همه متغیرها مقدار دارند ====
 missing_vars = []
 if not GITHUB_TOKEN:
-missing_vars.append("REPO_TOKENVALUE")
+    missing_vars.append("REPO_TOKENVALUE")
 if not GITHUB_OWNER:
-missing_vars.append("OWNERVALUE")
+    missing_vars.append("OWNERVALUE")
 if not GITHUB_REPO:
-missing_vars.append("REPOVALUE")
+    missing_vars.append("REPOVALUE")
 if not OPENAI_API_KEY:
-missing_vars.append("OPENAI_API_KEYVALUE")
+    missing_vars.append("OPENAI_API_KEYVALUE")
 
 if missing_vars:
-print(f"❌ خطا: این متغیرها مقدار ندارند: {', '.join(missing_vars)}")
+    print(f"❌ خطا: این متغیرها مقدار ندارند: {', '.join(missing_vars)}")
 sys.exit(1)
 
 # ==== پیکربندی GitHub API ====
