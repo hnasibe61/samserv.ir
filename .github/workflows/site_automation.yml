@@ -2,25 +2,24 @@ name: Site Automation
 
 on:
   schedule:
-    - cron: "0 8 * * *" # اجرا هر روز ساعت ۸ صبح UTC
+    - cron: '0 8 * * *'  # هر روز ساعت 08:00 UTC
   workflow_dispatch:
 
 jobs:
   content_generation:
     runs-on: ubuntu-latest
     steps:
-      - name: دریافت سورس
+      - name: Checkout
         uses: actions/checkout@v4
-
-      - name: نصب پایتون
-        uses: actions/setup-python@v5
+      - name: Set up Python
+        uses: actions/setup-python@v4
         with:
-          python-version: "3.11"
-
-      - name: نصب وابستگی‌ها
-        run: pip install openai requests
-
-      - name: اجرای بروزرسانی محتوا
+          python-version: '3.11'
+      - name: Install deps
+        run: |
+          python -m pip install --upgrade pip
+          pip install openai requests
+      - name: Run script
         env:
           REPO_TOKENVALUE: ${{ secrets.REPO_TOKENVALUE }}
           OWNERVALUE: ${{ secrets.OWNERVALUE }}
