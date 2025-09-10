@@ -7,10 +7,10 @@ import base64
 
 load_dotenv()
 
-GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
-OWNER = os.getenv("GITHUB_OWNER")
-REPO = os.getenv("GITHUB_REPO")
-OPENAI_KEY = os.getenv("OPENAI_API_KEY")
+GITHUB_TOKEN = os.getenv("REPO_TOKENVALUE")
+GITHUB_OWNER = os.getenv("OWNERVALUE")
+GITHUB_REPO = os.getenv("REPOVALUE")
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEYVALUE")
 
 BASE_URL = f"https://api.github.com/repos/{OWNER}/{REPO}"
 HEADERS = {
