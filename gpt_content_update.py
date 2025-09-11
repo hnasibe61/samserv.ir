@@ -136,6 +136,15 @@ else:
 # --- کانفیگ گیت ---
 subprocess.run(["git", "config", "user.email", "github-actions[bot]@users.noreply.github.com"], check=True)
 subprocess.run(["git", "config", "user.name", "github-actions[bot]"], check=True)
+# --- بررسی تغییرات قبل از کامیت ---
+result = subprocess.run(["git", "status", "--porcelain"], capture_output=True, text=True)
+if result.stdout.strip():
+    subprocess.run(["git", "add", "."], check=True)
+    subprocess.run(["git", "commit", "-m", "auto blog update"], check=True)
+    subprocess.run(["git", "push", "--force", "origin", BRANCH], check=True)
+    print("✅ Changes pushed to GitHub.")
+else:
+    print("ℹ️ No changes detected → nothing to commit.")
 
 # --- کامیت و پوش ---
 subprocess.run(["git", "add", "."], check=True)
