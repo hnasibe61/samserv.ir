@@ -1,6 +1,5 @@
 import os
 import base64
-import json
 import requests
 from openai import OpenAI
 
@@ -30,13 +29,27 @@ def generate_content(prompt, model_name):
     except Exception as e:
         if "insufficient_quota" in str(e):
             raise RuntimeError("Quota exhausted")
-        else:
-            raise
+        raise
+
+def test_github_access():
+    """
+    بررسی می‌کند آیا توکن و Owner/Repo به ریپوی هدف دسترسی دارند یا نه
+    """
+    url = f"https://api.github.com/repos/{OWNER}/{REPO}"
+    headers = {
+        "Authorization": f"token {REPO_TOKEN}",
+        "Accept": "application/vnd.github.v3+json"
+    }
+    res = requests.get(url, headers=headers)
+    print(f"🔍 Repo access test status: {res.status_code}")
+    if res.status_code != 200:
+        print(f"❌ Repo access failed. Response: {res.text}")
+        raise Exception("Repo access test failed. Check OWNER, REPO, TOKEN, and permissions.")
+    print("✅ Repo access test passed.")
 
 def update_github_file(path, content):
     """
-    آپدیت یا ساخت فایل در ریپو
-    اگر مسیر وجود نداشت، فایل جدید ایجاد می‌شود
+    آپدیت یا ساخت فایل در GitHub
     """
     url = f"https://api.github.com/repos/{OWNER}/{REPO}/contents/{path}"
     headers = {
@@ -44,12 +57,10 @@ def update_github_file(path, content):
         "Accept": "application/vnd.github.v3+json"
     }
 
-    # گِت برای پیدا کردن SHA (اگر فایل موجود بود)
+    # بررسی SHA (اگر فایل موجود بود)
     r = requests.get(url, headers=headers)
     sha = r.json().get("sha") if r.status_code == 200 else None
 
-    # ساختن پوشه به صورت پیش‌فرض به GitHub API مربوط نیست — نیازی به ساخت پوشه جدا نداریم،
-    # فقط با PUT می‌تونیم فایل توی مسیر جدید درست کنیم
     payload = {
         "message": "Auto update site content",
         "content": base64.b64encode(content.encode("utf-8")).decode("utf-8")
@@ -63,9 +74,7 @@ def update_github_file(path, content):
     res = requests.put(url, headers=headers, json=payload)
 
     if res.status_code not in (200, 201):
-        raise Exception(
-            f"GitHub update failed ({res.status_code}): {res.text}"
-        )
+        raise Exception(f"GitHub update failed ({res.status_code}): {res.text}")
 
 if __name__ == "__main__":
     prompt_text = "Write an SEO-optimized blog post about repairing laptop power adapters."
@@ -76,6 +85,9 @@ if __name__ == "__main__":
         print(f"⚠️ Quota issue in {PRIMARY_MODEL}, switching to {FALLBACK_MODEL}...")
         text = generate_content(prompt_text, FALLBACK_MODEL)
 
-    # این مسیر اگر فولدر content وجود نداشته باشه، خود GitHub فایل رو میسازه
+    # ۱. تست دسترسی به ریپو
+    test_github_access()
+
+    # ۲. آپدیت یا ساخت فایل
     update_github_file("content/latest.txt", text)
     print("✅ Content update completed.")
