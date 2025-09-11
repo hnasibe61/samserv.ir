@@ -142,6 +142,16 @@
             </div>
         </div>
     </section>
+<!-- Latest Update Section -->
+<section id="latest-update-section" class="py-16 bg-yellow-50">
+    <div class="container mx-auto px-4">
+        <h2 class="text-3xl font-bold text-center mb-8 text-yellow-800">آخرین خبر</h2>
+        <div id="latest-update" class="bg-white p-6 rounded-xl shadow-md text-gray-700 text-lg leading-relaxed text-center">
+            در حال بارگذاری...
+        </div>
+    </div>
+</section>
+
 
     <!-- Video Section -->
     <!-- Video Section -->
@@ -197,14 +207,22 @@
     </footer>
     <script src="assets/js/main.js"></script>
 </body>
-    <!-- Latest Update Section -->
-<section id="latest-update-section" class="py-16 bg-yellow-50">
-    <div class="container mx-auto px-4">
-        <h2 class="text-3xl font-bold text-center mb-8 text-yellow-800">آخرین خبر</h2>
-        <div id="latest-update" class="bg-white p-6 rounded-xl shadow-md text-gray-700 text-lg leading-relaxed text-center">
-            در حال بارگذاری...
-        </div>
-    </div>
-</section>
+ <script>
+document.addEventListener('DOMContentLoaded', function () {
+    fetch('content/latest.txt')
+        .then(response => {
+            if (!response.ok) throw new Error('خطا در بارگذاری خبر');
+            return response.text();
+        })
+        .then(data => {
+            document.getElementById('latest-update').textContent = data;
+        })
+        .catch(err => {
+            document.getElementById('latest-update').textContent = 'امکان بارگذاری خبر وجود ندارد.';
+            console.error(err);
+        });
+});
+</script>
+
 </html>
 
