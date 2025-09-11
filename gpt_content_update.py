@@ -1,20 +1,21 @@
 import os
 import requests
-import base64
+import subprocess
+import tempfile
 from openai import OpenAI
 
-# خواندن متغیرها از محیط
+# --- مرحله 1: خواندن متغیرها ---
 OWNER = os.getenv("OWNERVALUE")
 REPO = os.getenv("REPOVALUE")
 TOKEN = os.getenv("REPO_TOKENVALUE")
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEYVALUE")
+BRANCH = "main"  # یا master
 
-# --- مرحله 1: چاپ و تست دسترسی ---
 print(f"🔍 OWNER: {OWNER}")
 print(f"🔍 REPO : {REPO}")
 print(f"🔍 Token starts with: {TOKEN[:4]}... (len={len(TOKEN)})")
 
-# تست دسترسی به ریپو
+# --- مرحله 2: تست دسترسی به ریپو ---
 check_url = f"https://api.github.com/repos/{OWNER}/{REPO}"
 resp = requests.get(check_url, headers={"Authorization": f"token {TOKEN}"})
 print(f"📡 Repo access check → {resp.status_code}")
@@ -28,10 +29,8 @@ if resp.status_code != 200:
 else:
     print("✅ Repo is accessible!")
 
-# --- مرحله 2: شروع OpenAI Client ---
+# --- مرحله 3: تولید محتوا با OpenAI ---
 client = OpenAI(api_key=OPENAI_API_KEY)
-
-# --- مرحله 3: تولید محتوا ---
 print("📝 Generating content with OpenAI...")
 
 try:
@@ -45,31 +44,27 @@ except Exception as e:
     print("❌ OpenAI content generation failed:", str(e))
     exit(1)
 
-# --- مرحله 4: آپلود فایل در GitHub ---
+# --- مرحله 4: کلون و آپدیت ریپو ---
+temp_dir = tempfile.mkdtemp()
+repo_url = f"https://{TOKEN}@github.com/{OWNER}/{REPO}.git"
+
+# Clone برنچ اصلی
+subprocess.run(["git", "clone", "--branch", BRANCH, repo_url, temp_dir], check=True)
+os.chdir(temp_dir)
+
+# مسیر فایل
 file_path = "content/latest.txt"
-get_file_url = f"https://api.github.com/repos/{OWNER}/{REPO}/contents/{file_path}"
+os.makedirs(os.path.dirname(file_path), exist_ok=True)
 
-# گرفتن SHA اگر فایل وجود دارد
-r = requests.get(get_file_url, headers={"Authorization": f"token {TOKEN}"})
-sha = r.json().get("sha") if r.status_code == 200 else None
+# ذخیره محتوای جدید
+with open(file_path, "w", encoding="utf-8") as f:
+    f.write(content)
 
-# آماده کردن JSON
-data = {
-    "message": "Automated content update",
-    "content": base64.b64encode(content.encode("utf-8")).decode("utf-8"),
-}
-if sha:
-    data["sha"] = sha
+# Stage و commit
+subprocess.run(["git", "add", file_path], check=True)
+subprocess.run(["git", "commit", "-m", "update content"], check=True)
 
-# آپلود
-put_resp = requests.put(
-    get_file_url,
-    headers={"Authorization": f"token {TOKEN}"},
-    json=data
-)
+# Force push برای حذف تاریخچه اضافی
+subprocess.run(["git", "push", "--force", "origin", BRANCH], check=True)
 
-if put_resp.status_code in (200, 201):
-    print("✅ File updated successfully!")
-else:
-    print(f"❌ File update failed ({put_resp.status_code}): {put_resp.text}")
-    exit(1)
+print("✅ File updated on main branch with force push - no commit history bloat!")
