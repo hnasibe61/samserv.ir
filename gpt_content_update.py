@@ -49,6 +49,7 @@ def update_github_file(path, content):
         "content": base64.b64encode(content.encode("utf-8")).decode("utf-8"),
         "sha": sha
     }
+    print(f"Owner={OWNER}, Repo={REPO}, Token starts with: {REPO_TOKEN[:4]}... length={len(REPO_TOKEN)}")
     res = requests.put(url, headers=headers, json=payload)
 
     if res.status_code not in (200, 201):
