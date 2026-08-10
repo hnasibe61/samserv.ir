@@ -87,6 +87,11 @@
             <a href="shutdown.html" style="font-size:1.2rem;font-weight:700;color:#125;text-decoration:none;">۲- دلیل خاموش شدن لپتاپ زیر بار و فشار</a>
             <p style="color:#444;margin:8px 0 0 0;">خاموش شدن ناگهانی لپ‌تاپ هنگام اجرای بازی یا نرم‌افزار سنگین به چه علت است؟ <a href="shutdown.html" style="color:#2a76d2;text-decoration:underline;">[ادامه مطلب]</a></p>
         </article>
+        <!-- پست ۳ -->
+        <article style="background:#f6f8fa;padding:20px;border-radius:12px;">
+            <a href="laptop-no-power.html" style="font-size:1.2rem;font-weight:700;color:#125;text-decoration:none;">۳- لپ‌تاپ روشن نمی‌شود؛ عیب‌یابی از آداپتور تا مادربرد</a>
+            <p style="color:#444;margin:8px 0 0 0;">اگر لپ‌تاپ هیچ واکنشی ندارد یا فقط لحظه‌ای روشن می‌شود، این راهنمای تخصصی مسیر تغذیه و قطعات مشکوک را بررسی می‌کند. <a href="laptop-no-power.html" style="color:#2a76d2;text-decoration:underline;">[مطالعه کامل]</a></p>
+        </article>
         <!-- Latest Update Section -->
 <section id="latest-update-section" class="py-16 bg-yellow-50">
     <div class="container mx-auto px-4">
@@ -99,7 +104,7 @@
 
         <script>
 document.addEventListener('DOMContentLoaded', function () {
-    fetch('content/latest.txt')
+    fetch('../content/latest.txt')
         .then(response => {
             if (!response.ok) throw new Error('خطا در بارگذاری خبر');
             return response.text();
