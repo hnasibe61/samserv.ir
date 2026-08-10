@@ -92,32 +92,17 @@
             <a href="laptop-no-power.html" style="font-size:1.2rem;font-weight:700;color:#125;text-decoration:none;">۳- لپ‌تاپ روشن نمی‌شود؛ عیب‌یابی از آداپتور تا مادربرد</a>
             <p style="color:#444;margin:8px 0 0 0;">اگر لپ‌تاپ هیچ واکنشی ندارد یا فقط لحظه‌ای روشن می‌شود، این راهنمای تخصصی مسیر تغذیه و قطعات مشکوک را بررسی می‌کند. <a href="laptop-no-power.html" style="color:#2a76d2;text-decoration:underline;">[مطالعه کامل]</a></p>
         </article>
-        <!-- Latest Update Section -->
-<section id="latest-update-section" class="py-16 bg-yellow-50">
+        <!-- Latest Article Section -->
+<section id="latest-article-section" class="py-10 bg-yellow-50">
     <div class="container mx-auto px-4">
-        <h2 class="text-3xl font-bold text-center mb-8 text-yellow-800">آخرین خبر</h2>
-        <div id="latest-update" class="bg-white p-6 rounded-xl shadow-md text-gray-700 text-lg leading-relaxed text-center">
-            در حال بارگذاری...
-        </div>
+        <h2 class="text-3xl font-bold text-center mb-8 text-yellow-800">آخرین مقاله</h2>
+        <article class="bg-white p-6 rounded-xl shadow-md text-gray-700 leading-relaxed">
+            <h3 class="text-2xl font-bold text-blue-800 mb-3"><a href="laptop-no-power.html" class="hover:text-blue-600">لپ‌تاپ روشن نمی‌شود؛ عیب‌یابی تخصصی از آداپتور تا مادربرد</a></h3>
+            <p class="text-lg mb-4">تحلیل علائم، تست آداپتور و جک شارژ، قطعات مشکوک و مسیر عیب‌یابی مدار تغذیه لپ‌تاپ از نگاه تعمیرکار سامترونیک.</p>
+            <a href="laptop-no-power.html" class="inline-block bg-blue-700 text-white px-5 py-2 rounded-lg hover:bg-blue-800">مطالعه مقاله</a>
+        </article>
     </div>
 </section>
-
-        <script>
-document.addEventListener('DOMContentLoaded', function () {
-    fetch('../content/latest.txt')
-        .then(response => {
-            if (!response.ok) throw new Error('خطا در بارگذاری خبر');
-            return response.text();
-        })
-        .then(data => {
-            document.getElementById('latest-update').textContent = data;
-        })
-        .catch(err => {
-            document.getElementById('latest-update').textContent = 'امکان بارگذاری خبر وجود ندارد.';
-            console.error(err);
-        });
-});
-</script>
 
     </section>
 </main>
