@@ -112,7 +112,7 @@ def generate_article(topic_label, topic_focus, today):
 - image_alt: پیشنهاد alt فارسی برای تصویر مقاله
 """
     response = client.responses.create(
-        model=os.environ.get("OPENAI_MODEL", "gpt-5.6-luna"),
+        model=os.environ.get("OPENAI_MODEL", "gpt-4o-mini"),
         input=prompt,
         max_output_tokens=5000,
     )
